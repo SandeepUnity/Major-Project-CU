@@ -65,6 +65,10 @@ Open Swagger UI at `http://localhost:8000/docs`.
 
 See `docs/DEMO_README.md`.
 
+## Deploy (Render)
+
+Blueprint for **Postgres + API + Next.js**: `render.yaml`. Step-by-step: `docs/DEPLOY_RENDER.md`.
+
 ## Important (recommended)
 
 For reliable installs and to avoid conflicts with other Python packages on your system, use a **virtual environment** (`python -m venv .venv`) or run via **Docker**.

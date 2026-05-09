@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     retrieval_top_k: int = 5
     retrieval_confidence_threshold: float = 0.3
 
+    # CORS: comma-separated origins (e.g. https://your-frontend.onrender.com). Local dev origins always allowed.
+    cors_origins: str = ""
+
 
 settings = Settings()
 

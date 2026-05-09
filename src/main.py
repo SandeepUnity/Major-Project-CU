@@ -26,14 +26,25 @@ from src.utils.logger import configure_logging
 configure_logging(settings.log_level)
 logger = logging.getLogger("app")
 
+
+def _allowed_cors_origins() -> list[str]:
+    origins = [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+    extra = (getattr(settings, "cors_origins", None) or "").strip()
+    for part in extra.split(","):
+        p = part.strip()
+        if p and p not in origins:
+            origins.append(p)
+    return origins
+
+
 app = FastAPI(title="EmpowerTech RAG Chatbot", version="0.1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
+    allow_origins=_allowed_cors_origins(),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

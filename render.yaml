@@ -1,0 +1,55 @@
+# Render Blueprint: Postgres + FastAPI API + Next.js frontend
+# https://render.com/docs/blueprint-spec
+#
+# After first deploy: optional one-off shell on the API service to ingest FAQs:
+#   python -m src.ingestion.ingest --source data/knowledge_base_faqs.csv --type csv
+#
+# If https://empowertech-api.onrender.com or ...-web... is taken globally, Render
+# appends a suffix — then update CORS_ORIGINS and NEXT_PUBLIC_API_BASE_URL to match
+# the URLs shown in the Render dashboard and redeploy.
+
+version: "1"
+
+databases:
+  - name: empowertech-db
+    databaseName: empowertech_chatbot
+    user: empowertech
+    plan: free
+
+services:
+  - type: web
+    name: empowertech-api
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    preDeployCommand: python -m src.models.init_db
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: empowertech-db
+          property: connectionString
+      - key: CORS_ORIGINS
+        value: https://empowertech-web.onrender.com
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: PINECONE_API_KEY
+        sync: false
+      - key: PINECONE_INDEX_NAME
+        value: empowertech-rag-1536
+      - key: PINECONE_NAMESPACE
+        value: default
+
+  - type: web
+    name: empowertech-web
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./frontend/Dockerfile
+    dockerContext: ./frontend
+    healthCheckPath: /
+    envVars:
+      - key: NEXT_PUBLIC_API_BASE_URL
+        value: https://empowertech-api.onrender.com
