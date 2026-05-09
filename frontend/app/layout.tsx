@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import { ColdStartBanner } from "@/components/ColdStartBanner";
+import { ProjectCredits } from "@/components/ProjectCredits";
 
 export const metadata: Metadata = {
   title: "EmpowerTech Support Chat",
@@ -15,9 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900">
+      <body className="min-h-screen flex flex-col bg-zinc-50 text-zinc-900">
         <ColdStartBanner />
-        {children}
+        <div className="flex min-h-0 flex-1 flex-col">{children}</div>
+        <ProjectCredits />
       </body>
     </html>
   );
