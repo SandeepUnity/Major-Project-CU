@@ -4,3 +4,8 @@ id,query,intent
 3,How can I reset my password?,Transactional
 4,Where can I see my class schedule?,Informational
 5,What is the refund policy?,Transactional
+6,How do I get my certificate after completing a course?,Transactional
+7,What if a live class video will not play?,Transactional
+8,How long does a refund take to appear on my card?,Transactional
+9,Can my company buy multiple seats for a cohort?,Transactional
+10,Where is the learner code of conduct?,Informational
