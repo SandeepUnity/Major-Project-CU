@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -26,6 +27,17 @@ configure_logging(settings.log_level)
 logger = logging.getLogger("app")
 
 app = FastAPI(title="EmpowerTech RAG Chatbot", version="0.1.0")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 orchestrator = ChatOrchestrator()
 conv = ConversationManager()

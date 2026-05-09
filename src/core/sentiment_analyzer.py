@@ -54,11 +54,15 @@ class SentimentAnalyzer:
                     except Exception:
                         pass
 
-        vader = optional_import("vaderSentiment.vaderSentiment")
-        if vader:
-            analyzer = vader.SentimentIntensityAnalyzer()
+        try:
+            # Avoid optional_import for dotted imports; keep this robust in Docker/CI.
+            from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer  # type: ignore
+
+            analyzer = SentimentIntensityAnalyzer()
             compound = float(analyzer.polarity_scores(t)["compound"])  # [-1, 1]
             return SentimentResult(score=compound, label=_label(compound), confidence=None, method="vader")
+        except Exception:
+            pass
 
         return SentimentResult(score=0.0, label="neutral", confidence=None, method="fallback")
 
