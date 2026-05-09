@@ -21,3 +21,6 @@ vaderSentiment>=3.3.2
 # Testing
 pytest>=8.0
 httpx>=0.27
+
+# Experiments / statistics
+scipy>=1.11

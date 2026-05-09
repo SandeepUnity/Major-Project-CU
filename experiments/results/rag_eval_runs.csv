@@ -1,0 +1,21 @@
+condition,top_k,query_id,query,intent,retrieval_max_score,ref_context_token_recall,answer_reference_embedding_similarity,used_llm,guardrail,no_context,low_confidence
+top_k_3,3,1,How do I enroll in a course?,Transactional,0.7191,1.0,0.7131,True,False,False,False
+top_k_5,5,1,How do I enroll in a course?,Transactional,0.7192,1.0,0.7108,True,False,False,False
+top_k_3,3,2,What payment methods do you support?,Transactional,0.5534,1.0,0.9881,True,False,False,False
+top_k_5,5,2,What payment methods do you support?,Transactional,0.5536,1.0,0.9881,True,False,False,False
+top_k_3,3,3,How can I reset my password?,Transactional,0.6765,1.0,0.9562,True,False,False,False
+top_k_5,5,3,How can I reset my password?,Transactional,0.6765,1.0,0.9562,True,False,False,False
+top_k_3,3,4,Where can I see my class schedule?,Informational,0.6247,1.0,0.9419,True,False,False,False
+top_k_5,5,4,Where can I see my class schedule?,Informational,0.6245,1.0,0.8696,True,False,False,False
+top_k_3,3,5,What is the refund policy?,Transactional,0.6248,1.0,0.9918,True,False,False,False
+top_k_5,5,5,What is the refund policy?,Transactional,0.6248,1.0,0.9758,True,False,False,False
+top_k_3,3,6,How do I get my certificate after completing a course?,Transactional,0.7774,1.0,0.9339,True,False,False,False
+top_k_5,5,6,How do I get my certificate after completing a course?,Transactional,0.7775,1.0,0.934,True,False,False,False
+top_k_3,3,7,What if a live class video will not play?,Transactional,0.6126,0.8125,0.7022,True,False,False,False
+top_k_5,5,7,What if a live class video will not play?,Transactional,0.6128,0.8125,0.719,True,False,False,False
+top_k_3,3,8,How long does a refund take to appear on my card?,Transactional,0.6317,1.0,0.9988,True,False,False,False
+top_k_5,5,8,How long does a refund take to appear on my card?,Transactional,0.6317,1.0,0.9988,True,False,False,False
+top_k_3,3,9,Can my company buy multiple seats for a cohort?,Transactional,0.6435,1.0,0.9871,True,False,False,False
+top_k_5,5,9,Can my company buy multiple seats for a cohort?,Transactional,0.6434,1.0,0.8241,True,False,False,False
+top_k_3,3,10,Where is the learner code of conduct?,Informational,0.7996,1.0,1.0,True,False,False,False
+top_k_5,5,10,Where is the learner code of conduct?,Informational,0.7996,1.0,0.9988,True,False,False,False

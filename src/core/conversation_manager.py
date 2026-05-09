@@ -11,6 +11,25 @@ from src.models.database import ChatMessage, ChatSession, MessageRole, User
 
 
 class ConversationManager:
+    def _recalculate_session_avg_sentiment(self, db: Session, session: ChatSession) -> None:
+        """Mean sentiment over user turns that have sentiment.score in metadata (VADER compound)."""
+        q = (
+            select(ChatMessage.message_metadata)
+            .where(ChatMessage.session_id == session.id, ChatMessage.role == MessageRole.user)
+            .order_by(ChatMessage.timestamp.asc())
+        )
+        scores: list[float] = []
+        for meta in db.execute(q).scalars():
+            if not meta or not isinstance(meta, dict):
+                continue
+            sent = meta.get("sentiment")
+            if isinstance(sent, dict) and sent.get("score") is not None:
+                try:
+                    scores.append(float(sent["score"]))
+                except (TypeError, ValueError):
+                    pass
+        session.avg_sentiment = sum(scores) / len(scores) if scores else None
+
     def get_or_create_user(self, db: Session, user_id: str, email: Optional[str] = None) -> User:
         user = db.execute(select(User).where(User.user_id == user_id)).scalar_one_or_none()
         if user:
@@ -57,6 +76,7 @@ class ConversationManager:
         db.add(m)
         session.message_count = (session.message_count or 0) + 1
         db.flush()
+        self._recalculate_session_avg_sentiment(db, session)
         return m
 
     def load_history(self, db: Session, session: ChatSession, limit: int) -> List[Dict[str, Any]]:

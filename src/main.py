@@ -95,6 +95,11 @@ def history(session_id: str, db: Session = Depends(get_db)):
 
 @app.get("/analytics", response_model=AnalyticsResponse)
 def analytics(db: Session = Depends(get_db)):
+    # Backfill per-session averages from stored user-message metadata (historical rows pre-fix)
+    for sess in db.execute(select(ChatSession).where(ChatSession.avg_sentiment.is_(None))).scalars().all():
+        conv._recalculate_session_avg_sentiment(db, sess)
+    db.commit()
+
     total_sessions = db.execute(select(func.count()).select_from(ChatSession)).scalar_one()
     total_messages = db.execute(select(func.count()).select_from(ChatMessage)).scalar_one()
 

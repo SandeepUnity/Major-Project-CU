@@ -1,0 +1,11 @@
+id,query,intent,reference_answer
+1,How do I enroll in a course?,Transactional,"Open the course catalog on the website. Select the course and click Enroll. Sign in or create an account pay the fee online and you will receive a confirmation email with access instructions."
+2,What payment methods do you support?,Transactional,"We accept major credit and debit cards net banking where supported and UPI through our secure payment gateway."
+3,How can I reset my password?,Transactional,"On the login page click Forgot password enter your registered email and follow the link in the email to set a new password."
+4,Where can I see my class schedule?,Informational,"After enrollment open your course dashboard. The Schedule or Calendar tab shows session dates and times in your local timezone when configured."
+5,What is the refund policy?,Transactional,"Refund eligibility depends on the course and batch. Generally full or partial refund may apply only within the published refund window from the batch start date. After that window fees are typically non-refundable unless required by law or special promotion terms."
+6,How do I get my certificate after completing a course?,Transactional,"If you meet completion criteria assessments attendance if required your certificate is issued digitally. Download it from the course completion page or Certificates section."
+7,What if a live class video will not play?,Transactional,"Use Chrome or Edge current version. Clear cache disable heavy ad blockers on the learning site and try another network. If it fails contact technical support with your browser name and error message."
+8,How long does a refund take to appear on my card?,Transactional,"Approved refunds usually return to the original payment method within 7 to 14 business days depending on your bank or card issuer."
+9,Can my company buy multiple seats for a cohort?,Transactional,"Yes. Corporate or bulk enrollment is available through our business team. Use the Contact sales or Enterprise form on the website."
+10,Where is the learner code of conduct?,Informational,"The learner code of conduct is linked from the course handbook and Terms of service on the website."

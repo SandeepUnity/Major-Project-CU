@@ -1,8 +1,11 @@
 """
-Chunking experiment scaffold.
+Chunking experiment scaffold (multi chunk-size sweeps require re-ingestion).
 
-Runs a small evaluation set across multiple chunk sizes and stores results in the DB.
-This is intentionally minimal; expand for thesis runs (N=100 queries, multiple namespaces).
+For **offline RAG evaluation + statistical tests** on the current index, run:
+
+    python experiments/run_rag_evaluation.py
+
+See experiments/README_EVALUATION.md and experiments/results/RAG_EVAL_SUMMARY.md.
 """
 
 from __future__ import annotations
@@ -19,7 +22,8 @@ def main() -> None:
     chunk_sizes = [int(x.strip()) for x in args.chunk_sizes.split(",") if x.strip()]
     print("Planned chunk sizes:", chunk_sizes)
     print("Queries file:", args.queries_path)
-    print("TODO: implement experiment runner (see Docs/IMPLEMENTATION_PLAN.md Phase 2).")
+    print("Chunk-size matrix: re-ingest per size, then score — see Docs/IMPLEMENTATION_PLAN.md Phase 2.")
+    print("Ready-to-run eval + stats: python experiments/run_rag_evaluation.py")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,16 @@
+{
+  "n_pairs": 10,
+  "similarity_mean_top_k_3": 0.9213,
+  "similarity_mean_top_k_5": 0.8975,
+  "difference_mean_top5_minus_top3": -0.0238,
+  "paired_ttest": {
+    "statistic": -1.3816865379288708,
+    "pvalue": 0.20039776390154182,
+    "null_hypothesis": "mean(similarity_top_k_5 - similarity_top_k_3) = 0"
+  },
+  "wilcoxon_signed_rank": {
+    "statistic": 6.0,
+    "pvalue": 0.17629637444051116
+  },
+  "methodology": "Paired comparisons on answer_reference_embedding_similarity \u2014 cosine similarity of OpenAI embeddings (text-embedding-3-small) between gold reference_answer and generated answer. ref_context_token_recall = |reference tokens \u2229 context tokens| / |reference tokens|."
+}
