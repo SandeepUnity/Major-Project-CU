@@ -1,0 +1,6 @@
+id,question,answer,category,tags
+1,How do I enroll in a course?,Go to the course page and click Enroll. Complete the payment to confirm your seat.,enrollment,"enroll,payment"
+2,What payment methods are supported?,We support credit/debit cards and UPI for course payments.,payment,"upi,card"
+3,How do I reset my password?,Use the Forgot Password link on the login page to receive a reset email.,account,"password,login"
+4,Where can I find the class schedule?,Open your enrolled course dashboard to view the weekly schedule and timings.,course,"schedule,timing"
+5,How do I request a refund?,Refund requests must be submitted through support within the refund window mentioned in the policy.,payment,"refund,policy"

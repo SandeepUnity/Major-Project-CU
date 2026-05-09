@@ -1,0 +1,6 @@
+id,query,intent
+1,How do I enroll in a course?,Transactional
+2,What payment methods do you support?,Transactional
+3,How can I reset my password?,Transactional
+4,Where can I see my class schedule?,Informational
+5,What is the refund policy?,Transactional
