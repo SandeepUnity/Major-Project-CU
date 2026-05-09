@@ -25,7 +25,7 @@ services:
     dockerfilePath: ./Dockerfile
     dockerContext: .
     healthCheckPath: /health
-    preDeployCommand: python -m src.models.init_db
+    # Free tier: preDeployCommand is not supported. Tables are created on API startup (see main.py lifespan).
     envVars:
       - key: DATABASE_URL
         fromDatabase:

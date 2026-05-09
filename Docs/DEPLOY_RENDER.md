@@ -36,7 +36,7 @@ Redeploy the **frontend** after changing `NEXT_PUBLIC_API_BASE_URL` (it is baked
 
 After the API is **live**:
 
-- **Tables:** `preDeployCommand` runs `python -m src.models.init_db` before each deploy.  
+- **Tables:** On **free** web services Render does **not** support `preDeployCommand`. This app runs SQLAlchemy **`create_all()` once at API startup** (`lifespan` in `main.py`) so tables exist without a pre-deploy step.  
 - **Ingest FAQs (run once)** — Render Shell for `empowertech-api`:
   ```bash
   python -m src.ingestion.ingest --source data/knowledge_base_faqs.csv --type csv

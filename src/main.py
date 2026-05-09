@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -19,8 +20,8 @@ from src.api.schemas import (
 from src.config.settings import settings
 from src.core.chat_orchestrator import ChatOrchestrator
 from src.core.conversation_manager import ConversationManager
-from src.models.database import ChatMessage, ChatSession
-from src.models.db import get_db
+from src.models.database import Base, ChatMessage, ChatSession
+from src.models.db import get_db, get_engine
 from src.utils.logger import configure_logging
 
 configure_logging(settings.log_level)
@@ -40,7 +41,15 @@ def _allowed_cors_origins() -> list[str]:
     return origins
 
 
-app = FastAPI(title="EmpowerTech RAG Chatbot", version="0.1.0")
+@asynccontextmanager
+async def _lifespan(_: FastAPI):
+    # Idempotent: safe for every process start (Render free tier has no preDeployCommand).
+    Base.metadata.create_all(bind=get_engine())
+    logger.info("Database schema ensured.")
+    yield
+
+
+app = FastAPI(title="EmpowerTech RAG Chatbot", version="0.1.0", lifespan=_lifespan)
 
 app.add_middleware(
     CORSMiddleware,
