@@ -49,6 +49,7 @@ After the API is **live**:
 ## 3. Free-tier behaviour
 
 - **Web services spin down** when idle; first request after sleep can take **30–60+ seconds**.  
+- The Next.js UI shows a **dismissible amber banner** automatically when `NEXT_PUBLIC_API_BASE_URL` contains `onrender.com` (set `NEXT_PUBLIC_HIDE_COLD_START_HINT=true` on the frontend to hide it).  
 - **Free PostgreSQL** may have expiry / size limits ([Render docs](https://render.com/docs/free)).
 
 ## 4. Configuration reference
