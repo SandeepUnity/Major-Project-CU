@@ -13,6 +13,7 @@ from src.core.llm_client import LLMClient
 from src.core.prompt_builder import PromptBuilder
 from src.core.retriever import Retriever
 from src.core.sentiment_analyzer import SentimentAnalyzer
+from src.core.small_talk import is_small_talk_message
 from src.models.database import Feedback, MessageRole
 
 
@@ -53,6 +54,104 @@ class ChatOrchestrator:
 
         intent = self._intent.classify(query)
         sentiment = self._sentiment.analyze(query)
+
+        if is_small_talk_message(query):
+            decision_st = self._handoff.should_handoff(
+                user_query=query,
+                sentiment_score=sentiment.score,
+                retrieval_confidence=None,
+                repeated_failures=repeated_failures,
+            )
+            self._conv.add_message(
+                db,
+                session,
+                role=MessageRole.user,
+                content=query,
+                intent=intent.intent,
+                confidence=intent.confidence,
+                metadata={"sentiment": {"score": sentiment.score, "label": sentiment.label, "method": sentiment.method}},
+            )
+            if decision_st.should_handoff:
+                assistant_text = "I understand. Let me connect you with an advisor who can help further."
+                meta = {
+                    "route": "small_talk",
+                    "handoff": {"reason": decision_st.reason, "severity": decision_st.severity},
+                    "retrieval": {"confidence": None, "top_k": settings.retrieval_top_k, "chunks": []},
+                    "intent": {"intent": intent.intent, "confidence": intent.confidence},
+                }
+                assistant_msg = self._conv.add_message(
+                    db,
+                    session,
+                    role=MessageRole.assistant,
+                    content=assistant_text,
+                    intent=intent.intent,
+                    confidence=None,
+                    retrieved_context=[],
+                    metadata=meta,
+                )
+                db.add(
+                    Feedback(
+                        message_id=assistant_msg.id,
+                        sentiment_score=sentiment.score,
+                        sentiment_label=sentiment.label,
+                        retrieval_top_k=settings.retrieval_top_k,
+                        notes="handoff_triggered_small_talk",
+                    )
+                )
+                session.handoff_triggered = True
+                session.handoff_reason = decision_st.reason
+                db.commit()
+                return ChatResult(
+                    response=assistant_text,
+                    session_id=session.session_id,
+                    intent=intent.intent,
+                    confidence=None,
+                    handoff_trigger=True,
+                    metadata=meta,
+                )
+            if self._llm is None:
+                self._llm = LLMClient()
+            system, user_prompt = self._prompts.build_small_talk(query=query, history=history)
+            llm_res = self._llm.chat(system=system, user=user_prompt)
+            meta = {
+                "route": "small_talk",
+                "model": llm_res.model,
+                "usage": {
+                    "prompt_tokens": llm_res.prompt_tokens,
+                    "completion_tokens": llm_res.completion_tokens,
+                    "total_tokens": llm_res.total_tokens,
+                },
+                "retrieval": {"confidence": None, "top_k": settings.retrieval_top_k, "chunks": []},
+                "intent": {"intent": intent.intent, "confidence": intent.confidence},
+            }
+            assistant_msg = self._conv.add_message(
+                db,
+                session,
+                role=MessageRole.assistant,
+                content=llm_res.text,
+                intent=intent.intent,
+                confidence=None,
+                retrieved_context=[],
+                metadata=meta,
+                tokens_used=llm_res.total_tokens,
+            )
+            db.add(
+                Feedback(
+                    message_id=assistant_msg.id,
+                    sentiment_score=sentiment.score,
+                    sentiment_label=sentiment.label,
+                    retrieval_top_k=settings.retrieval_top_k,
+                )
+            )
+            db.commit()
+            return ChatResult(
+                response=llm_res.text,
+                session_id=session.session_id,
+                intent=intent.intent,
+                confidence=None,
+                handoff_trigger=False,
+                metadata=meta,
+            )
 
         retrieval = self._retriever.retrieve(query)
         retrieval_conf = retrieval.confidence
