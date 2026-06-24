@@ -1,5 +1,7 @@
 # Deploy on Render (Postgres + API + Next.js)
 
+> Part of the [project documentation](README.md). Local setup: [Setup Guide](SETUP.md).
+
 Use the repository root **`render.yaml`** as a **Blueprint** so Render creates three resources: free PostgreSQL, Docker **API**, and Docker **frontend**.
 
 ## Prerequisites

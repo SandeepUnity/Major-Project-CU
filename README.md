@@ -1,19 +1,33 @@
 # EmpowerTech RAG Chatbot (MSc Data Science Major Project)
 
-Production-grade **Retrieval-Augmented Generation (RAG)** chatbot for EmpowerTech Solutions (online education platform). The system provides 24/7 support and produces **thesis-ready analytics** (RAG quality metrics, sentiment, experiments).
+Production-grade **Retrieval-Augmented Generation (RAG)** chatbot for EmpowerTech Solutions, an online education platform. The system provides 24/7 student support and produces **thesis-ready analytics** (RAG quality metrics, sentiment, experiments).
 
 ## Features
 
-- RAG chat answering **only from knowledge base** (guardrails + traceability)
+- RAG chat answering **only from the knowledge base** (guardrails + traceability)
 - Session-based memory stored in PostgreSQL
 - Intent classification (Transactional / Informational / General)
 - Human handoff trigger (frustration / repeated failures / negative sentiment)
 - Ingestion pipeline (CSV FAQs + PDFs) → chunk → embed → Pinecone upsert
-- Basic analytics endpoint (`GET /analytics`) + evaluation scaffolding
+- Analytics endpoint (`GET /analytics`) + offline RAG evaluation
+- Next.js web UI (chat, history, analytics)
 
-## Quickstart (Local)
+## Documentation
 
-### 1) Setup environment
+Full documentation lives in **[`Docs/`](Docs/README.md)**:
+
+| Guide | Description |
+|-------|-------------|
+| [Setup](Docs/SETUP.md) | Local dev, Docker, DB init, ingestion |
+| [Architecture](Docs/ARCHITECTURE.md) | System design and data flow |
+| [API Reference](Docs/API.md) | REST endpoints and examples |
+| [Configuration](Docs/CONFIGURATION.md) | Environment variables |
+| [Development](Docs/DEVELOPMENT.md) | Structure, tests, experiments |
+| [Frontend](Docs/FRONTEND.md) | Next.js UI |
+| [Demo (Docker)](Docs/DEMO_README.md) | Curl walkthrough |
+| [Deploy (Render)](Docs/DEPLOY_RENDER.md) | Production blueprint |
+
+## Quickstart
 
 ```bash
 python -m venv .venv
@@ -22,58 +36,38 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Fill `.env` with your OpenAI + Pinecone keys.
-
-### 2) Start PostgreSQL
-
-Use Docker (recommended):
+Fill `.env` with OpenAI and Pinecone keys, then:
 
 ```bash
 docker compose up -d postgres
-```
-
-### 3) Initialize database
-
-```bash
 python -m src.models.init_db
-python -m src.models.seed_db
-```
-
-### 4) Ingest sample data (optional)
-
-```bash
 python -m src.ingestion.ingest --source data/sample_faqs.csv --type csv
-```
-
-### 5) Run API
-
-```bash
 uvicorn src.main:app --reload
 ```
 
-Open Swagger UI at `http://localhost:8000/docs`.
+- API docs: http://localhost:8000/docs
+- Frontend: `cd frontend && npm install && npm run dev` → http://localhost:3000
 
-## Endpoints
+See [Setup Guide](Docs/SETUP.md) for the full walkthrough.
 
-- `POST /session` create a session
-- `POST /chat` chat with RAG + memory
-- `GET /history?session_id=...` session history
-- `GET /analytics` minimal spec-required analytics summary
-- `GET /health` dependency health checks
+## API endpoints
 
-## Demo (Docker Compose)
+| Method | Path | Description |
+|--------|------|-------------|
+| `POST` | `/session` | Create a chat session |
+| `POST` | `/chat` | Chat with RAG + memory |
+| `GET` | `/history?session_id=...` | Session history |
+| `GET` | `/analytics` | Aggregate metrics |
+| `GET` | `/health` | Dependency health checks |
 
-See `docs/DEMO_README.md`.
+## Tech stack
 
-## Deploy (Render)
+Python 3.11 · FastAPI · OpenAI · Pinecone · PostgreSQL · Next.js 16 · Docker · Render
 
-Blueprint for **Postgres + API + Next.js**: `render.yaml`. Step-by-step: `docs/DEPLOY_RENDER.md`.
+## Project spec
 
-## Important (recommended)
+See [`RESOURCES/PROJECT_SPEC.md`](RESOURCES/PROJECT_SPEC.md) for original requirements.
 
-For reliable installs and to avoid conflicts with other Python packages on your system, use a **virtual environment** (`python -m venv .venv`) or run via **Docker**.
+## Notes
 
-## Notes for Report (Chapter 5–7 evidence)
-
-- Screenshots: Swagger UI, sample `/chat` runs, ingestion logs, analytics JSON outputs
-- Stored traceability: retrieved chunks/sources are stored with each assistant response
+Use a **virtual environment** or **Docker** to avoid dependency conflicts. For reliable installs on Windows, prefer `python -m venv .venv` before `pip install`.

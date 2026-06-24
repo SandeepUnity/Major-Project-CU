@@ -1,6 +1,8 @@
 # Demo Run Instructions (Local)
 
-This project can be demoed locally using Docker Compose (PostgreSQL + API).
+> Part of the [project documentation](README.md). For full setup options see [Setup Guide](SETUP.md).
+
+This project can be demoed locally using Docker Compose (PostgreSQL + API + frontend).
 
 ## Prerequisites
 
