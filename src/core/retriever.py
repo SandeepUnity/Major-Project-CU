@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Optional
 
 from src.config.settings import settings
+from src.core.query_expander import expand_query
 from src.core.vector_store import OpenAIEmbedder, PineconeVectorStore, RetrievedChunk
 
 
@@ -28,8 +29,15 @@ class Retriever:
         except Exception:
             return RetrievalResult(chunks=[], confidence=None)
 
-        emb = self._embedder.embed(query)
-        chunks = self._store.query(embedding=emb, top_k=top_k)
+        search_queries = expand_query(query)
+        merged: dict[str, RetrievedChunk] = {}
+        for search_q in search_queries:
+            emb = self._embedder.embed(search_q)
+            for chunk in self._store.query(embedding=emb, top_k=top_k):
+                existing = merged.get(chunk.id)
+                if existing is None or chunk.score > existing.score:
+                    merged[chunk.id] = chunk
+        chunks = sorted(merged.values(), key=lambda c: c.score, reverse=True)[:top_k]
         conf = max((c.score for c in chunks), default=0.0) if chunks else 0.0
         return RetrievalResult(chunks=chunks, confidence=float(conf))
 

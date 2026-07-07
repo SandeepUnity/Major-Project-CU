@@ -27,6 +27,7 @@ class Settings(BaseSettings):
     chat_history_limit: int = 10
     retrieval_top_k: int = 5
     retrieval_confidence_threshold: float = 0.3
+    broad_topic_retrieval_confidence_threshold: float = 0.2
 
     # CORS: comma-separated origins (e.g. https://your-frontend.onrender.com). Local dev origins always allowed.
     cors_origins: str = ""

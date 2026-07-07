@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from src.core.query_expander import is_broad_topic_query
 from src.core.vector_store import RetrievedChunk
 
 
@@ -10,6 +11,13 @@ DEFAULT_SYSTEM = (
     "If you don't have relevant information, respond exactly: "
     "\"I'm sorry, I don't have that information. Would you like to speak with an advisor?\" "
     "Be concise, friendly, and accurate."
+)
+
+BROAD_TOPIC_ADDENDUM = (
+    " The user asked a broad overview question. Synthesize a helpful summary from ALL "
+    "relevant context chunks (do not rely on a single chunk). Organize the answer with "
+    "short paragraphs or bullet points covering the main themes found in the context. "
+    "Do not invent details not present in the context."
 )
 
 SMALL_TALK_SYSTEM = (
@@ -50,10 +58,14 @@ class PromptBuilder:
             hist_lines.append(f"{role}: {content}")
         hist = "\n".join(hist_lines).strip()
 
+        system = DEFAULT_SYSTEM
+        if is_broad_topic_query(query):
+            system = DEFAULT_SYSTEM + BROAD_TOPIC_ADDENDUM
+
         user = (
             f"KNOWLEDGE BASE CONTEXT:\n{context if context else '(none)'}\n\n"
             f"CHAT HISTORY:\n{hist if hist else '(none)'}\n\n"
             f"USER QUESTION:\n{query}\n"
         )
-        return DEFAULT_SYSTEM, user
+        return system, user
 

@@ -11,6 +11,7 @@ from src.core.handoff_detector import HandoffDetector
 from src.core.intent_classifier import IntentClassifier
 from src.core.llm_client import LLMClient
 from src.core.prompt_builder import PromptBuilder
+from src.core.query_expander import is_broad_topic_query
 from src.core.retriever import Retriever
 from src.core.sentiment_analyzer import SentimentAnalyzer
 from src.core.small_talk import is_small_talk_message
@@ -176,7 +177,12 @@ class ChatOrchestrator:
 
         # Guardrails: if no context or low confidence, return fallback without LLM call.
         no_context = not retrieval.chunks
-        low_conf = retrieval_conf is not None and retrieval_conf < settings.retrieval_confidence_threshold
+        conf_threshold = (
+            settings.broad_topic_retrieval_confidence_threshold
+            if is_broad_topic_query(query)
+            else settings.retrieval_confidence_threshold
+        )
+        low_conf = retrieval_conf is not None and retrieval_conf < conf_threshold
         if no_context or low_conf:
             assistant_text = FALLBACK_MESSAGE
             handoff = True  # treat as handoff hint when KB lacks answer
